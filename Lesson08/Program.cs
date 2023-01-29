@@ -40,15 +40,15 @@ namespace Lesson08
             }
         }
 
-        private static void OrderByRowArray( int[,] _array )
+        private static void OrderByRowArray<T>( T[,] _array ) where T: IComparable<T>
         {
             for (int i = 0; i < _array.GetLength(0); i++)
             {
                 CoctailSortRow(_array, i);
-            }
+            }            
         }
 
-        private static void CoctailSortRow( int[,] _array, int row)
+        private static void CoctailSortRow<T>( T[,] _array, int row) where T: IComparable<T>
         {
             int left = 0;
             int right = _array.GetLength(1) - 1;
@@ -58,22 +58,73 @@ namespace Lesson08
                 for (int i = left; i < right; i++)
                 {
                     
-                    if (_array[row, i] > _array[row, i + 1])
+                    if (_array[row, i].CompareTo(_array[row, i + 1]) < 0 )
                     {
-                        SwapInRow<int>(_array, row, i, i + 1);
+                        SwapInRow(_array, row, i, i + 1);
                     }
                 }
                 right--;
 
                 for (int j = right - 1; j > left; j--)
                 {
-                    if (_array[row, j - 1] > _array[row, j])
+                    if (_array[row, j - 1].CompareTo(_array[row, j]) < 0 )
                     {
-                        SwapInRow<int>(_array, row, j - 1, j);
+                        SwapInRow(_array, row, j - 1, j);
                     }
                 }
                 left++;
             }
+        }
+
+        private static int NumberRowMinSum( int[,] _array )
+        {
+            int min = 0;
+            int sum = 0;
+            int numberRowFind = -1;
+
+            for (int i = 0; i < _array.GetLength(0); i++)
+            {                
+                for (int j = 0; j < _array.GetLength(1); j++)
+                {
+                    sum += _array[i, j];
+                }
+
+                if ( min > sum || i == 0 )
+                {
+                    min = sum;
+                    numberRowFind = i;
+                }
+                sum = 0;
+            }
+            return numberRowFind + 1;
+        }
+
+        private static int[,] ProduceOfMatrix( int[,] _arrayA, int[,] _arrayB )
+        {
+            int sizeMatrixA_M = _arrayA.GetLength(0);
+            int sizeMatrixA_N = _arrayA.GetLength(1);
+            int sizeMatrixB_N = _arrayB.GetLength(0);
+            int sizeMatrixB_K = _arrayB.GetLength(1);
+            int[,] resultArray = new int[sizeMatrixA_M, sizeMatrixB_K];
+
+            if (sizeMatrixA_N == sizeMatrixB_N)
+            {
+                for (int i = 0; i < sizeMatrixA_M; i ++)
+                {
+                    for (int j = 0; j < sizeMatrixB_K; j++)
+                    {
+                        for (int k = 0; k < sizeMatrixB_N; k++)
+                        {
+                            resultArray[i, j] += _arrayA[i, k] * _arrayB[k, j];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Матрицы нельзя перемножить");
+            }
+            return resultArray;
         }
 
         private static void PrintArray<T>( T[] _array )
@@ -106,8 +157,7 @@ namespace Lesson08
                 Console.ForegroundColor = color;
             }
         }
-
-
+        
         private static void Print2DArray<T>( T[,] _array )
         {
             if (_array.GetLength(0) > 0 && _array.GetLength(1) > 0)
@@ -171,6 +221,11 @@ namespace Lesson08
             //    8 4 2 4
             //    5 2 6 7
             //Программа считает сумму элементов в каждой строке и выдаёт номер строки с наименьшей суммой элементов: 1 строка
+            Console.WriteLine("Задача 56: Задайте прямоугольный двумерный массив. Напишите программу, которая будет находить строку с наименьшей суммой элементов.");
+            int size = 4;
+            int[,] array2 = CreateRandom2DArray(_sizeM: size, _sizeN: size, _minValue: 0, _maxValue: 50);
+            Print2DArray(array2);
+            Console.WriteLine("Номер строки с наименьшей суммой элементов - {0}", NumberRowMinSum(array2));
 
             Divider(screenWidth);
             //Задача 58: Задайте две матрицы. Напишите программу, которая будет находить произведение двух матриц.
@@ -180,7 +235,17 @@ namespace Lesson08
             //Результирующая матрица будет:
             //    18 20
             //    15 18
-
+            Console.WriteLine("Задача 58: Задайте две матрицы. Напишите программу, которая будет находить произведение двух матриц.");
+            var sizeM = 3;
+            var sizeN = 4;
+            int[,] array3 = CreateRandom2DArray(_sizeM: sizeM, _sizeN: sizeN, _minValue: 0, _maxValue: 10);
+            int[,] array4 = CreateRandom2DArray(_sizeM: sizeN, _sizeN: sizeM, _minValue: 0, _maxValue: 10);
+            Print2DArray(array3);
+            Console.WriteLine("-> *");
+            Print2DArray(array4);
+            int[,] array5 = ProduceOfMatrix(array3, array4);
+            Console.WriteLine("-> =");
+            Print2DArray(array5);
             Divider(screenWidth);
             //Задача 60. ...Сформируйте трёхмерный массив из неповторяющихся двузначных чисел. Напишите программу, которая будет построчно выводить массив, добавляя индексы каждого элемента.
             //Массив размером 2 x 2 x 2
@@ -188,6 +253,7 @@ namespace Lesson08
             //    34(1,0,0) 41(1,1,0)
             //    27(0,0,1) 90(0,1,1)
             //    26(1,0,1) 55(1,1,1)
+            Console.WriteLine("Задача 60. ...Сформируйте трёхмерный массив из неповторяющихся двузначных чисел. Напишите программу, которая будет построчно выводить массив, добавляя индексы каждого элемента.");
 
             Divider(screenWidth);
             //Задача 62. Напишите программу, которая заполнит спирально массив 4 на 4.
@@ -196,7 +262,7 @@ namespace Lesson08
             //    12 13 14 05
             //    11 16 15 06
             //    10 09 08 07
-
+            Console.WriteLine("Задача 62. Напишите программу, которая заполнит спирально массив 4 на 4.");
 
             Console.ReadKey();
         }
