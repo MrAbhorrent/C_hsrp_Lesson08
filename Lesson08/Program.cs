@@ -291,7 +291,6 @@ namespace Lesson08
             int[,] array2 = CreateRandom2DArray(_sizeM: size, _sizeN: size, _minValue: 0, _maxValue: 50);
             Print2DArray(array2);
             Console.WriteLine("Номер строки с наименьшей суммой элементов - {0}", NumberRowMinSum(array2));
-
             Divider(screenWidth);
             //Задача 58: Задайте две матрицы. Напишите программу, которая будет находить произведение двух матриц.
             //Например, даны 2 матрицы:
@@ -324,7 +323,6 @@ namespace Lesson08
             int sizeZ = 2;
             int[, ,] array6 = CreateRandom3DArray(_sizeX: sizeX, _sizeY: sizeY, _sizeZ: sizeZ, _nonRepetitive: true);
             Print3DArray(array6);
-
             Divider(screenWidth);
             //Задача 62. Напишите программу, которая заполнит спирально массив 4 на 4.
             //    Например, на выходе получается вот такой массив:
@@ -333,8 +331,40 @@ namespace Lesson08
             //    11 16 15 06
             //    10 09 08 07
             Console.WriteLine("Задача 62. Напишите программу, которая заполнит спирально массив 4 на 4.");
-
+            Console.Write("Введите размер квадратного массива - ");
+            int sizeArray = Convert.ToInt32(Console.ReadLine());
+            int[,] array7 = CreateFillSquareArray(sizeArray);
+            Print2DArray(array7);
             Console.ReadKey();
+        }
+
+        private static int[,] CreateFillSquareArray( int _sizeArray )
+        {
+            int[,] resultArray = new int[_sizeArray, _sizeArray];
+            int count = resultArray.Length;
+            int row = 0;
+            int col = 0;
+            int dx = 0;
+            int dy = 1;
+            int directional = 0;
+            int border = _sizeArray;
+
+            for (int i = 0; i < count; i++)
+            {
+                resultArray[col, row] = i + 1;
+                if (--border == 0)
+                {
+                    border = _sizeArray * (directional % 2) + _sizeArray * ((directional + 1) % 2) - (directional / 2 - 1) - 2;
+                    int temp = dy;
+                    dy = -dx;
+                    dx = temp;
+                    directional++;
+                }
+                col += dx;
+                row += dy;
+
+            }
+            return resultArray;
         }
 
         
