@@ -30,6 +30,34 @@ namespace Lesson08
             return array;
         }
 
+        private static int[, ,] CreateRandom3DArray( int _sizeX, int _sizeY, int _sizeZ, bool _nonRepetitive )
+        {
+            int minValue = 0;
+            int maxValue = 100;
+            int temp;
+            List<int> checkedList = new List<int>();
+            int[, ,] newArray = new int[_sizeX, _sizeY, _sizeZ];
+
+            Random rnd = new Random();
+            for (int i = 0; i < _sizeX; i++)
+            {
+                for (int j = 0; j < _sizeY; j++)
+                {
+                    for (int k = 0; k < _sizeZ; k++)
+                    {
+                        do
+                        {
+                            temp = rnd.Next((int)minValue, (int)maxValue);
+                        } while (checkedList.Contains(temp));
+                        checkedList.Add(temp);
+                        newArray[i, j, k] = temp;
+                    }
+                }
+            }
+            checkedList.Clear();
+            return newArray;
+        }
+
         private static void SwapInRow<T>( T[,] _array, int rowNumber, int positionColumnA, int positionColumnB )
         {
             if (positionColumnA < _array.GetLength(1) && positionColumnB < _array.GetLength(1))
@@ -193,9 +221,46 @@ namespace Lesson08
             }
         }
 
+        private static void Print3DArray<T>( T[,,] _array )
+        {
+            if (_array.GetLength(0) > 0 && _array.GetLength(1) > 0 && _array.GetLength(2) > 0)
+            {
+                ConsoleColor color = Console.ForegroundColor;
+                for (int i = 0; i < _array.GetLength(0); i++)
+                {                    
+                    for (int j = 0; j < _array.GetLength(1); j++)
+                    {
+                        Console.Write("[");
+                        for (int k = 0; k < _array.GetLength(2); k++)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            if (_array[i, j, k] is double)
+                            {
+                                Console.Write("{0,6:F2}({1},{2},{3})", _array[i, j, k], i, j, k);
+                            }
+                            else
+                            {
+                                Console.Write("{0,6}({1},{2},{3})", _array[i, j, k], i, j, k);
+                            }
+                            Console.ForegroundColor = color;
+                            if (k == _array.GetLength(2) - 1)
+                            {
+                                Console.Write("]");
+                            }
+                            else
+                            {
+                                Console.Write(", ");
+                            }
+                        }
+                    }
+                    Console.WriteLine();
+                }
+                Console.ForegroundColor = color;
+            }
+        }
+        
         static void Main( string[] args )
         {
-
             //Задача 54: Задайте двумерный массив. Напишите программу, которая упорядочит по убыванию элементы каждой строки двумерного массива.
             //Например, задан массив:
             //    1 4 7 2
@@ -254,6 +319,11 @@ namespace Lesson08
             //    27(0,0,1) 90(0,1,1)
             //    26(1,0,1) 55(1,1,1)
             Console.WriteLine("Задача 60. ...Сформируйте трёхмерный массив из неповторяющихся двузначных чисел. Напишите программу, которая будет построчно выводить массив, добавляя индексы каждого элемента.");
+            int sizeX = 2;
+            int sizeY = 2;
+            int sizeZ = 2;
+            int[, ,] array6 = CreateRandom3DArray(_sizeX: sizeX, _sizeY: sizeY, _sizeZ: sizeZ, _nonRepetitive: true);
+            Print3DArray(array6);
 
             Divider(screenWidth);
             //Задача 62. Напишите программу, которая заполнит спирально массив 4 на 4.
@@ -266,5 +336,7 @@ namespace Lesson08
 
             Console.ReadKey();
         }
+
+        
     }
 }
